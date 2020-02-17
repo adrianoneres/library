@@ -7,14 +7,15 @@ import me.adrianoneres.library.model.Author;
 import me.adrianoneres.library.service.AuthorService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/authors")
@@ -30,12 +31,12 @@ public class AuthorController {
     }
 
     @GetMapping
-    public List<AuthorDto> index() {
-        return authorService
-                .findAll()
-                .stream()
-                .map(a -> modelMapper.map(a, AuthorDto.class))
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<AuthorDto>> index(@PageableDefault(sort = "name") Pageable pageable) {
+        Page<AuthorDto> authors = authorService
+                .findAll(pageable)
+                .map(author -> modelMapper.map(author, AuthorDto.class));
+
+        return ResponseEntity.ok(authors);
     }
 
     @PostMapping

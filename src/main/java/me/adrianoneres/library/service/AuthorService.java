@@ -4,10 +4,11 @@ import me.adrianoneres.library.exception.DataNotFoundException;
 import me.adrianoneres.library.model.Author;
 import me.adrianoneres.library.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Service
 public class AuthorService {
@@ -15,8 +16,8 @@ public class AuthorService {
     @Autowired
     private AuthorRepository authorRepository;
 
-    public List<Author> findAll() {
-        return authorRepository.findAll();
+    public Page<Author> findAll(Pageable pageable) {
+        return authorRepository.findAll(pageable);
     }
 
     public Author find(Long id) {
